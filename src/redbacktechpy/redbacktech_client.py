@@ -1357,10 +1357,12 @@ class RedbackTechClient:
         id_temp = data['Data']['Nodes'][0]['StaticData']['Id']
         id_temp = id_temp[-4:] + 'bat'
         id_temp = id_temp.lower()
-        data_dict = {'value': (soc_data['Data']['MinSoC0to1'])*100,'entity_name': 'min_soc_0_to_1', 'device_id': id_temp, 'device_type': 'battery'}
-        self._redback_entities.append(data_dict)
-        data_dict = {'value': (soc_data['Data']['MinOffgridSoC0to1'])*100,'entity_name': 'min_Offgrid_soc_0_to_1', 'device_id': id_temp, 'device_type': 'battery'}
-        self._redback_entities.append(data_dict)
+        if soc_data['Data']['MinSoC0to1'] is not None:
+            data_dict = {'value': (soc_data['Data']['MinSoC0to1'])*100,'entity_name': 'min_soc_0_to_1', 'device_id': id_temp, 'device_type': 'battery'}
+            self._redback_entities.append(data_dict)
+        if soc_data['Data']['MinOffgridSoC0to1'] is not None:
+            data_dict = {'value': (soc_data['Data']['MinOffgridSoC0to1'])*100,'entity_name': 'min_Offgrid_soc_0_to_1', 'device_id': id_temp, 'device_type': 'battery'}
+            self._redback_entities.append(data_dict)
         data_dict = {'value': data['Data']['StaticData']['Location']['Latitude'],'entity_name': 'latitude', 'device_id': id_temp, 'device_type': 'battery'}
         self._redback_entities.append(data_dict)
         data_dict = {'value': data['Data']['StaticData']['Location']['Longitude'],'entity_name': 'longitude', 'device_id': id_temp, 'device_type': 'battery'}
@@ -1417,10 +1419,11 @@ class RedbackTechClient:
         self._redback_entities.append(data_dict)
         data_dict = {'value': data2['Data']['Battery']['NumberOfModules'],'entity_name': 'battery_no_of_modules', 'device_id': id_temp, 'device_type': 'battery'}
         self._redback_entities.append(data_dict)
-        data_dict = {'value':(data['Data']['StaticData']['SiteDetails']['BatteryCapacitykWh'] * data2['Data']['BatterySoCInstantaneous0to1'] ),'entity_name': 'battery_currently_stored_kwh', 'device_id': id_temp, 'device_type': 'battery'}
-        self._redback_entities.append(data_dict)
-        data_dict = {'value':  round(data['Data']['StaticData']['SiteDetails']['BatteryCapacitykWh'] * (data2['Data']['BatterySoCInstantaneous0to1']- soc_data['Data']['MinSoC0to1']),2),'entity_name': 'battery_currently_usable_kwh', 'device_id': id_temp, 'device_type': 'battery'}
-        self._redback_entities.append(data_dict)
+        if data['Data']['StaticData']['SiteDetails']['BatteryCapacitykWh'] is not None:
+            data_dict = {'value':(data['Data']['StaticData']['SiteDetails']['BatteryCapacitykWh'] * data2['Data']['BatterySoCInstantaneous0to1'] ),'entity_name': 'battery_currently_stored_kwh', 'device_id': id_temp, 'device_type': 'battery'}
+            self._redback_entities.append(data_dict)
+            data_dict = {'value':  round(data['Data']['StaticData']['SiteDetails']['BatteryCapacitykWh'] * (data2['Data']['BatterySoCInstantaneous0to1']- soc_data['Data']['MinSoC0to1']),2),'entity_name': 'battery_currently_usable_kwh', 'device_id': id_temp, 'device_type': 'battery'}
+            self._redback_entities.append(data_dict)
         battery_current_a = 0
         battery_power_kw = 0
         for battery in data['Data']['Nodes'][0]['StaticData']['BatteryModels']:
