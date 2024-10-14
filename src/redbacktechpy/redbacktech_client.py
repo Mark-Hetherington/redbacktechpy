@@ -675,7 +675,7 @@ class RedbackTechClient:
             #process and prepare base data wanted
             await self._convert_responses_to_inverter_entities(response1, response2)
             #If we find a battery attached to the inverter process and prepare additional data wanted
-            if response1['Data']['Nodes'][0]['StaticData']['BatteryCount'] > 0:
+            if response2['Data']['BatterySoCInstantaneous0to1'] is not None:
                 soc_data = await self._get_config_by_serial(response1['Data']['Nodes'][0]['StaticData']['Id'])
                 await self._convert_responses_to_battery_entities(response1, response2, soc_data)
                 await self._create_device_info_battery(response1)
